@@ -1,0 +1,95 @@
+{
+  "apiVersion": "apps/v1",
+  "kind": "Deployment",
+  "metadata": {
+    "name": "cloudnotes",
+    "namespace": "observability-recovery"
+  },
+  "spec": {
+    "replicas": 1,
+    "strategy": {
+      "type": "RollingUpdate"
+    },
+    "selector": {
+      "matchLabels": {
+        "app": "cloudnotes"
+      }
+    },
+    "template": {
+      "metadata": {
+        "labels": {
+          "app": "cloudnotes"
+        }
+      },
+      "spec": {
+        "securityContext": {
+          "runAsNonRoot": true,
+          "runAsUser": 10001,
+          "runAsGroup": 10001,
+          "fsGroup": 10001
+        },
+        "containers": [
+          {
+            "name": "app",
+            "image": "observability-recovery:1.0.0",
+            "imagePullPolicy": "Never",
+            "ports": [
+              {
+                "containerPort": 8080
+              }
+            ],
+            "env": [
+              {
+                "name": "STATELESS",
+                "value": "1"
+              },
+              {
+                "name": "APP_MODE",
+                "valueFrom": {
+                  "configMapKeyRef": {
+                    "name": "app-settings",
+                    "key": "APP_MODE"
+                  }
+                }
+              }
+            ],
+            "resources": {
+              "requests": {
+                "cpu": "50m",
+                "memory": "48Mi"
+              },
+              "limits": {
+                "cpu": "500m",
+                "memory": "128Mi"
+              }
+            },
+            "readinessProbe": {
+              "httpGet": {
+                "path": "/readyness",
+                "port": 8080
+              },
+              "initialDelaySeconds": 2,
+              "periodSeconds": 2
+            },
+            "livenessProbe": {
+              "httpGet": {
+                "path": "/health",
+                "port": 8080
+              },
+              "initialDelaySeconds": 8,
+              "periodSeconds": 5
+            },
+            "securityContext": {
+              "allowPrivilegeEscalation": false,
+              "capabilities": {
+                "drop": [
+                  "ALL"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

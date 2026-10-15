@@ -1,0 +1,27 @@
+rule_files: [/etc/prometheus/alerts.yml]
+evaluation_interval: 2s
+tests:
+  - name: healthy requests must not fire
+    interval: 2s
+    input_series:
+      - series: 'cloudnotes_requests_total{status_class="2xx"}'
+        values: '0+10x90'
+      - series: 'cloudnotes_requests_total{status_class="5xx"}'
+        values: '0+0x90'
+    alert_rule_test:
+      - eval_time: 120s
+        alertname: CloudNotesErrorRatio
+        exp_alerts: []
+  - name: failed requests must fire
+    interval: 2s
+    input_series:
+      - series: 'cloudnotes_requests_total{status_class="2xx"}'
+        values: '0+0x90'
+      - series: 'cloudnotes_requests_total{status_class="5xx"}'
+        values: '0+10x90'
+    alert_rule_test:
+      - eval_time: 120s
+        alertname: CloudNotesErrorRatio
+        exp_alerts:
+          - exp_labels: {severity: warning}
+            exp_annotations: {summary: Elevated failed-request ratio}

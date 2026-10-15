@@ -1,0 +1,7 @@
+{
+  "unit": "ms",
+  "target_seconds": 60,
+  "start_definition": "time successful kubectl Pod delete completes",
+  "recovery_definition": "first observation of desired Ready replicas after deletion",
+  "observations": null
+}

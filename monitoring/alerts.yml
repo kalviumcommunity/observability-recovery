@@ -1,0 +1,10 @@
+groups:
+  - name: user-impact
+    rules:
+      - alert: CloudNotesErrorRatio
+        expr: sum(rate(cloudnotes_requests_total{status_class="2xx"}[1m])) / clamp_min(sum(rate(cloudnotes_requests_total[1m])), 0.001) > 0.2 and sum(rate(cloudnotes_requests_total[1m])) > 0.1
+        for: 10s
+        labels:
+          severity: warning
+        annotations:
+          summary: Elevated failed-request ratio

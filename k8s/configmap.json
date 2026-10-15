@@ -1,0 +1,11 @@
+{
+  "apiVersion": "v1",
+  "kind": "ConfigMap",
+  "metadata": {
+    "name": "app-settings",
+    "namespace": "observability-recovery"
+  },
+  "data": {
+    "APP_MODE": "assessment"
+  }
+}

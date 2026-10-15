@@ -1,0 +1,7 @@
+{
+  "host_port": 18083,
+  "image": "observability-recovery:1.0.0",
+  "namespace": "observability-recovery",
+  "app_port": 8080,
+  "hostname": "notes.test"
+}

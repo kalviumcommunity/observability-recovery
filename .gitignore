@@ -1,0 +1,10 @@
+.env
+.terraform/
+**/.terraform/
+*.tfstate*
+**/tfplan
+__pycache__/
+*.pyc
+evidence/
+*.pdf
+logs/
